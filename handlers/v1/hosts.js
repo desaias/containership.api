@@ -1,7 +1,7 @@
 'use strict';
 
-const _each = require('lodash._each');
-const _keyBy = require('lodash._keyby');
+const _forEach = require('lodash.forEach');
+const _keyBy = require('lodash.keyby');
 const async = require('async');
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
         const attributes = core.cluster.legiond.get_attributes();
         hosts[attributes.id] = attributes;
 
-        _each(hosts, (configuration/*, host*/) => {
+        _forEach(hosts, (configuration/*, host*/) => {
             configuration.containers = [];
         });
 
