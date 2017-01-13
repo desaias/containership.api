@@ -1,6 +1,6 @@
 'use strict';
 
-const _forEach = require('lodash.forEach');
+const _forEach = require('lodash.foreach');
 const _keyBy = require('lodash.keyby');
 const async = require('async');
 
