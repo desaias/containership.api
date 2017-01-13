@@ -1,19 +1,21 @@
 'use strict';
 
-const _ = require('lodash');
+const _has = require('lodash.has');
+const _isUndefined = require('lodash.isundefined');
+const _keyBy = require('lodash.keyby');
 const async = require('async');
 
 module.exports = {
     // get host
     get(req, res, next) {
         const core = req.core;
-        const hosts = _.keyBy(core.cluster.legiond.get_peers(), 'id');
+        const hosts = _keyBy(core.cluster.legiond.get_peers(), 'id');
 
         const attributes = core.cluster.legiond.get_attributes();
         hosts[attributes.id] = attributes;
 
         const host = hosts[req.params.host];
-        if(_.isUndefined(host)) {
+        if(_isUndefined(host)) {
             return next();
         }
         host.containers = [];
@@ -50,15 +52,15 @@ module.exports = {
         // update host
     update(req, res, next) {
         const core = req.core;
-        if(!_.isUndefined(req.body) && _.has(req.body, 'tags')) {
-            const hosts = _.keyBy(core.cluster.legiond.get_peers(), 'id');
+        if(!_isUndefined(req.body) && _has(req.body, 'tags')) {
+            const hosts = _keyBy(core.cluster.legiond.get_peers(), 'id');
 
             const attributes = core.cluster.legiond.get_attributes();
             hosts[attributes.id] = attributes;
 
             const host = hosts[req.params.host];
 
-            if(!_.isUndefined(host)) {
+            if(!_isUndefined(host)) {
                 core.cluster.legiond.send({
                     event: core.constants.events.UPDATE_HOST,
                     data: req.body.tags
@@ -76,14 +78,14 @@ module.exports = {
     // delete host
     delete(req, res, next) {
         const core = req.core;
-        const hosts = _.keyBy(core.cluster.legiond.get_peers(), 'id');
+        const hosts = _keyBy(core.cluster.legiond.get_peers(), 'id');
 
         const attributes = core.cluster.legiond.get_attributes();
         hosts[attributes.id] = attributes;
 
         const host = hosts[req.params.host];
 
-        if(!_.isUndefined(host)) {
+        if(!_isUndefined(host)) {
             core.cluster.legiond.send({
                 event: core.constants.events.DELETE_HOST
             }, host);

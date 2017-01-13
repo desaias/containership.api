@@ -22,7 +22,20 @@
     "body-parser": "^1.4.3",
     "express": "^4.2.0",
     "ip": "^1.1.4",
-    "lodash": "4.17.2"
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.defaults": "^4.2.0",
+    "lodash.foreach": "^4.5.0",
+    "lodash.has": "^4.5.2",
+    "lodash.includes": "^4.3.0",
+    "lodash.isnumber": "^3.0.3",
+    "lodash.isobject": "^3.0.2",
+    "lodash.isundefined": "^3.0.1",
+    "lodash.keyby": "^4.6.0",
+    "lodash.keys": "^4.2.0",
+    "lodash.last": "^3.0.0",
+    "lodash.map": "^4.6.0",
+    "lodash.parseint": "^4.0.2",
+    "lodash.pick": "^4.4.0"
   },
   "devDependencies": {
     "eslint": "^3.3.1",

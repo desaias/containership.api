@@ -1,6 +1,6 @@
 'use strict';
 
-const _ = require('lodash');
+const _has = require('lodash.has');
 
 module.exports = {
     // get variable
@@ -25,7 +25,7 @@ module.exports = {
     // create variable
     create(req, res, next) {
         const core = req.core;
-        if(!_.has(req.body, 'value')) {
+        if(!_has(req.body, 'value')) {
             res.stash = {
                 code: 400,
                 body: {
@@ -65,7 +65,7 @@ module.exports = {
     // update variable
     update(req, res, next) {
         const core = req.core;
-        if(!_.has(req.body, 'value')) {
+        if(!_has(req.body, 'value')) {
             res.stash = {
                 code: 400,
                 body: {

@@ -1,6 +1,6 @@
 'use strict';
 
-const _ = require('lodash');
+const _last = require('lodash.last');
 const async = require('async');
 
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
                     if(err) {
                         return fn(err);
                     }
-                    variable_name = _.last(variable_name.split(core.constants.myriad.DELIMITER));
+                    variable_name = _last(variable_name.split(core.constants.myriad.DELIMITER));
                     vars[variable_name] = value;
 
                     return fn();

@@ -1,6 +1,11 @@
 'use strict';
 
-const _ = require('lodash');
+const _has = require('lodash.has');
+const _includes = require('lodash.includes');
+const _isUndefined = require('lodash.isundefined');
+const _keys = require('lodash.keys');
+const _last = require('lodash.last');
+const _map = require('lodash.map');
 const async = require('async');
 
 module.exports = {
@@ -50,7 +55,7 @@ module.exports = {
     // create applications
     create(req, res, next) {
         const core = req.core;
-        if(!_.isUndefined(req.body)) {
+        if(!_isUndefined(req.body)) {
             let all_applications = null;
 
             return async.series([
@@ -60,13 +65,13 @@ module.exports = {
                             return fn();
                         }
 
-                        applications = _.map(applications, (application) => {
-                            return _.last(application.split(core.constants.myriad.DELIMITER));
+                        applications = _map(applications, (application) => {
+                            return _last(application.split(core.constants.myriad.DELIMITER));
                         });
 
                         all_applications = applications;
 
-                        if(_.has(req.query, 'destroy') && req.query.destroy == 'true') {
+                        if(_has(req.query, 'destroy') && req.query.destroy == 'true') {
                             all_applications = [];
                             return async.each(applications, (application_name, fn) => {
                                 core.applications.remove(application_name, fn);
@@ -77,8 +82,8 @@ module.exports = {
                     });
                 },
                 (fn) => {
-                    return async.each(_.keys(req.body), (application_name, fn) => {
-                        if(!_.includes(all_applications, application_name)) {
+                    return async.each(_keys(req.body), (application_name, fn) => {
+                        if(!_includes(all_applications, application_name)) {
                             return core.applications.add(req.body[application_name], fn);
                         }
 

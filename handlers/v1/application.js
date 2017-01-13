@@ -1,6 +1,14 @@
 'use strict';
 
-const _ = require('lodash');
+const _cloneDeep = require('lodash.clonedeep');
+const _defaults = require('lodash.defaults');
+const _each = require('lodash.foreach');
+const _has = require('lodash.has');
+const _includes = require('lodash.includes');
+const _isNumber = require('lodash.isnumber');
+const _isObject = require('lodash.isobject');
+const _parseInt = require('lodash.parseint');
+const _pick = require('lodash.pick');
 const async = require('async');
 
 module.exports = {
@@ -42,7 +50,7 @@ module.exports = {
         const core = req.core;
         return core.cluster.myriad.persistence.get([core.constants.myriad.APPLICATION_PREFIX, req.params.application].join(core.constants.myriad.DELIMITER), (err/*, application*/) => {
             if(err && err.name == core.constants.myriad.ENOKEY) {
-                const config = _.pick(req.body, [
+                const config = _pick(req.body, [
                     'command',
                     'container_port',
                     'cpus',
@@ -88,7 +96,7 @@ module.exports = {
                 return next();
             }
 
-            if(!_.includes(applications, [core.constants.myriad.APPLICATION_PREFIX, req.params.application].join(core.constants.myriad.DELIMITER))) {
+            if(!_includes(applications, [core.constants.myriad.APPLICATION_PREFIX, req.params.application].join(core.constants.myriad.DELIMITER))) {
                 res.stash.code = 404;
                 return next();
             }
@@ -97,22 +105,22 @@ module.exports = {
                 id: req.params.application
             };
 
-            if(_.has(req.body, 'command')) {
+            if(_has(req.body, 'command')) {
                 body.command = req.body.command;
             }
-            if(_.has(req.body, 'container_port')) {
+            if(_has(req.body, 'container_port')) {
                 body.container_port = req.body.container_port;
             }
-            if(_.has(req.body, 'cpus')) {
+            if(_has(req.body, 'cpus')) {
                 body.cpus = req.body.cpus;
             }
-            if(_.has(req.body, 'engine')) {
+            if(_has(req.body, 'engine')) {
                 body.engine = req.body.engine;
             }
-            if(_.has(req.body, 'env_vars')) {
+            if(_has(req.body, 'env_vars')) {
                 body.env_vars = req.body.env_vars;
             }
-            if(_.has(req.body, 'health_checks')) {
+            if(_has(req.body, 'health_checks')) {
                 body.health_checks = req.body.health_checks;
                 const health_check_defaults = {
                     interval : 30000,
@@ -122,29 +130,29 @@ module.exports = {
                     type : 'tcp'
                 };
 
-                _.each(body.health_checks, (health_check) => {
-                    _.defaults(health_check, health_check_defaults);
+                _each(body.health_checks, (health_check) => {
+                    _defaults(health_check, health_check_defaults);
                 });
             }
-            if(_.has(req.body, 'image')) {
+            if(_has(req.body, 'image')) {
                 body.image = req.body.image;
             }
-            if(_.has(req.body, 'memory')) {
+            if(_has(req.body, 'memory')) {
                 body.memory = req.body.memory;
             }
-            if(_.has(req.body, 'network_mode')) {
+            if(_has(req.body, 'network_mode')) {
                 body.network_mode = req.body.network_mode;
             }
-            if(_.has(req.body, 'privileged')) {
+            if(_has(req.body, 'privileged')) {
                 body.privileged = req.body.privileged;
             }
-            if(_.has(req.body, 'respawn')) {
+            if(_has(req.body, 'respawn')) {
                 body.respawn = req.body.respawn;
             }
-            if(_.has(req.body, 'tags')) {
+            if(_has(req.body, 'tags')) {
                 body.tags = req.body.tags;
             }
-            if(_.has(req.body, 'volumes')) {
+            if(_has(req.body, 'volumes')) {
                 body.volumes = req.body.volumes;
             }
 
@@ -237,7 +245,7 @@ module.exports = {
                         res.stash.code = 500;
                     } else {
                         application = JSON.parse(application);
-                        res.stash.body = _.defaults(container, application);
+                        res.stash.body = _defaults(container, application);
                         res.stash.code = 200;
                     }
                     return next();
@@ -252,22 +260,22 @@ module.exports = {
     // create application container
     create_containers(req, res, next) {
         const core = req.core;
-        if(_.has(req.query, 'count')) {
+        if(_has(req.query, 'count')) {
             const body = {};
 
-            if(_.has(req.body, 'tags') && _.isObject(req.body.tags)) {
+            if(_has(req.body, 'tags') && _isObject(req.body.tags)) {
                 body.tags = req.body.tags;
             }
-            if(_.has(req.body, 'container_port') && _.isNumber(req.body.container_port)) {
+            if(_has(req.body, 'container_port') && _isNumber(req.body.container_port)) {
                 body.container_port = req.body.container_port;
             }
-            if(_.has(req.body, 'host_port') && _.isNumber(req.body.host_port)) {
+            if(_has(req.body, 'host_port') && _isNumber(req.body.host_port)) {
                 body.host_port = req.body.host_port;
             }
             let errors = 0;
 
-            return async.timesSeries(_.parseInt(req.query.count), (index, fn) => {
-                core.applications.deploy_container(req.params.application, _.cloneDeep(body), (err) => {
+            return async.timesSeries(_parseInt(req.query.count), (index, fn) => {
+                core.applications.deploy_container(req.params.application, _cloneDeep(body), (err) => {
                     if(err) {
                         errors++;
                     }
@@ -298,8 +306,8 @@ module.exports = {
     // remove application containers
     remove_containers(req, res, next) {
         const core = req.core;
-        if(_.has(req.query, 'count')) {
-            return core.applications.remove_containers(req.params.application, _.parseInt(req.query.count), (err) => {
+        if(_has(req.query, 'count')) {
+            return core.applications.remove_containers(req.params.application, _parseInt(req.query.count), (err) => {
                 if(err) {
                     res.stash = {
                         code: 500,

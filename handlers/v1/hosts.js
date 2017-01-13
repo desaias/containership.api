@@ -1,17 +1,18 @@
 'use strict';
 
-const _ = require('lodash');
+const _each = require('lodash._each');
+const _keyBy = require('lodash._keyby');
 const async = require('async');
 
 module.exports = {
     // get all hosts
     get(req, res, next) {
         const core = req.core;
-        const hosts = _.keyBy(core.cluster.legiond.get_peers(), 'id');
+        const hosts = _keyBy(core.cluster.legiond.get_peers(), 'id');
         const attributes = core.cluster.legiond.get_attributes();
         hosts[attributes.id] = attributes;
 
-        _.each(hosts, (configuration/*, host*/) => {
+        _each(hosts, (configuration/*, host*/) => {
             configuration.containers = [];
         });
 
